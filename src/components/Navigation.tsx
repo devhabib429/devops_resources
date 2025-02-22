@@ -1,13 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronDown, ChevronRight, Menu } from 'lucide-react';
 
-const Navigation = () => {
+const Navigation = ({ onSectionSelect }: { onSectionSelect: (topic: string, section: string) => void }) => {
   const [isOpen, setIsOpen] = useState(true);
-  const [expandedItems, setExpandedItems] = useState<string[]>(['Docker']);
+  const [expandedItems, setExpandedItems] = useState<string[]>(['DevOps', 'Docker']);
   const pathname = usePathname();
 
   const topics = [
@@ -246,22 +245,29 @@ const Navigation = () => {
 
   const isActive = (path: string) => pathname === path;
 
+  const handleSectionClick = (topic: string, section: string) => {
+    onSectionSelect(topic, section.toLowerCase().replace(/\s+/g, '-'));
+  };
+
   return (
     <>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg"
+        className="lg:hidden fixed top-20 left-4 z-50 p-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg"
       >
         <Menu size={24} />
       </button>
 
       <nav className={`
-        fixed lg:static top-0 left-0 h-full w-64 
-        transform ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        lg:translate-x-0 transition-transform duration-200 ease-in-out
+        w-64 h-[calc(100vh-4rem)] overflow-y-auto
+        lg:block ${isOpen ? 'block' : 'hidden'}
         bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700
-        overflow-y-auto z-40
+        scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600
+        scrollbar-track-transparent
       `}>
+        <div className="sticky top-0 bg-white dark:bg-gray-800 z-10 p-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-lg font-semibold">Topics</h2>
+        </div>
         <div className="p-4">
           <div className="space-y-1">
             {topics.map((topic) => (
@@ -271,15 +277,10 @@ const Navigation = () => {
                   className={`
                     flex items-center justify-between p-2 rounded-lg cursor-pointer
                     hover:bg-gray-100 dark:hover:bg-gray-700
-                    ${isActive(topic.path) ? 'bg-gray-100 dark:bg-gray-700' : ''}
+                    ${expandedItems.includes(topic.title) ? 'bg-gray-50 dark:bg-gray-700' : ''}
                   `}
                 >
-                  <Link
-                    href={topic.path}
-                    className={`flex-grow ${isActive(topic.path) ? 'text-blue-600 dark:text-blue-400' : ''}`}
-                  >
-                    {topic.title}
-                  </Link>
+                  <span className="flex-grow">{topic.title}</span>
                   {topic.subItems && (
                     <div className="text-gray-500">
                       {expandedItems.includes(topic.title) ? (
@@ -293,23 +294,19 @@ const Navigation = () => {
 
                 {topic.subItems && expandedItems.includes(topic.title) && (
                   <div className="ml-4 space-y-1">
-                    {topic.subItems.map((subItem) => {
-                      const subItemPath = getSubItemPath(topic.title, subItem);
-                      return (
-                        <Link
-                          key={subItem}
-                          href={subItemPath}
-                          className={`
-                            block px-4 py-2 text-sm rounded-lg
-                            ${isActive(subItemPath) 
-                              ? 'bg-gray-100 text-blue-600 dark:bg-gray-700 dark:text-blue-400' 
-                              : 'text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700'}
-                          `}
-                        >
-                          {subItem}
-                        </Link>
-                      );
-                    })}
+                    {topic.subItems.map((subItem) => (
+                      <button
+                        key={subItem}
+                        onClick={() => handleSectionClick(topic.title.toLowerCase(), subItem)}
+                        className={`
+                          block w-full text-left px-4 py-2 text-sm rounded-lg
+                          text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700
+                          transition-colors duration-150
+                        `}
+                      >
+                        {subItem}
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>
