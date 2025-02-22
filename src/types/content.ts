@@ -11,4 +11,15 @@ export interface TopicSection {
   content: string;
   commands?: string[];
   examples?: string[];
+}
+
+export interface TopicContent {
+  title: string;
+  description: string;
+  sections: {
+    title: string;
+    content: string;
+    commands?: string[];
+    examples?: string[];
+  }[];
 } 

@@ -1,13 +1,10 @@
-export interface TopicContent {
-  title: string;
-  description: string;
-  sections: {
-    title: string;
-    content: string;
-    commands?: string[];
-    examples?: string[];
-  }[];
-}
+import { kubernetesContent } from './kubernetes-content';
+import { githubActionsContent } from './github-actions-content';
+import { TopicContent } from '../types/content';
+import { linuxContent } from './linux-content';
+import { gitContent } from './git-content';
+import { yamlContent } from './yaml-content';
+import { helmContent } from './helm-content';
 
 export const dockerContent: TopicContent = {
   title: "Docker",
@@ -413,32 +410,6 @@ export const devSecOpsContent: TopicContent = {
   ]
 };
 
-export const yamlContent: TopicContent = {
-  title: "YAML",
-  description: "Learn YAML syntax and its applications in DevOps",
-  sections: [
-    {
-      title: "YAML Basics",
-      content: "Understanding YAML syntax and structure",
-      examples: [
-        "# Simple key-value pairs\nname: John\nage: 30",
-        "# Arrays\nfruits:\n  - apple\n  - banana\n  - orange",
-        "# Nested objects\nperson:\n  name: John\n  address:\n    city: New York\n    country: USA"
-      ]
-    },
-    {
-      title: "Data Types",
-      content: "Different data types in YAML",
-      examples: [
-        "# Strings\nname: John Doe\ndescription: 'This is a quoted string'\n",
-        "# Numbers\nage: 30\nprice: 19.99\npi: 3.14159\n",
-        "# Boolean\nis_active: true\nis_completed: false\n",
-        "# Null\nfield: null\nempty:"
-      ]
-    }
-  ]
-};
-
 export const golangContent: TopicContent = {
   title: "Golang",
   description: "Learn Go programming for DevOps and backend development",
@@ -457,26 +428,6 @@ export const golangContent: TopicContent = {
       examples: [
         "// Functions\nfunc add(x int, y int) int {\n    return x + y\n}",
         "// Structs\ntype Person struct {\n    Name string\n    Age  int\n}"
-      ]
-    }
-  ]
-};
-
-export const helmContent: TopicContent = {
-  title: "Helm",
-  description: "Package manager for Kubernetes",
-  sections: [
-    {
-      title: "Chart Structure",
-      content: "Understanding Helm chart organization",
-      commands: [
-        "helm create mychart",
-        "helm install release-name ./mychart",
-        "helm upgrade release-name ./mychart"
-      ],
-      examples: [
-        "# Chart.yaml\napiVersion: v2\nname: mychart\nversion: 0.1.0",
-        "# values.yaml\nreplicaCount: 1\nimage:\n  repository: nginx\n  tag: latest"
       ]
     }
   ]
@@ -799,6 +750,8 @@ scrape_configs:
 export const allContent = {
   devops: devopsContent,
   docker: dockerContent,
+  kubernetes: kubernetesContent,
+  "github-actions": githubActionsContent,
   yaml: yamlContent,
   golang: golangContent,
   helm: helmContent,
@@ -810,5 +763,9 @@ export const allContent = {
   webassembly: webAssemblyContent,
   terraform: terraformContent,
   devsecops: devSecOpsContent,
-  feedback: feedbackContent
-}; 
+  feedback: feedbackContent,
+  linux: linuxContent,
+  git: gitContent
+};
+
+export type ContentKey = keyof typeof allContent; 

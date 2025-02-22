@@ -1,19 +1,30 @@
 import { notFound } from 'next/navigation';
-import { allContent, TopicContent } from '@/data/content';
+import { allContent } from '@/data/content';
+import { TopicContent } from '@/types/content';
 import Breadcrumb from '@/components/Breadcrumb';
 
 type ContentKey = keyof typeof allContent;
 
 export default function TopicPage({ params }: { params: { topic: string; section: string } }) {
+  console.log('Current params:', params);
+  console.log('Available topics:', Object.keys(allContent));
+  console.log('GitHub Actions content:', allContent['github-actions']);
+  
+  const sectionId = params.section.toLowerCase();
+  console.log('Looking for section:', sectionId);
+  
   const content = allContent[params.topic as ContentKey];
+  console.log('Found content:', content?.title);
   
   if (!content) {
+    console.log('Content not found for topic:', params.topic);
     return notFound();
   }
 
   const section = content.sections.find(
-    (s: TopicContent['sections'][0]) => s.title.toLowerCase().replace(/\s+/g, '-') === params.section
+    s => s.title.toLowerCase().replace(/\s+/g, '-') === sectionId
   );
+  console.log('Found section:', section?.title);
 
   if (!section) {
     return notFound();
